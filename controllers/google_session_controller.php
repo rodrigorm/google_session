@@ -98,6 +98,9 @@ class GoogleSessionController extends GoogleSessionAppController {
 				'name' => $url['openid_ext1_value_firstname'] . ' ' . $url['openid_ext1_value_lastname'],
 			)
 		);
+
+		$this->__callback($user);
+
 		$this->Session->write('Auth', $user);
 
 		$this->set('redirect', $this->Auth->redirect());
@@ -110,5 +113,12 @@ class GoogleSessionController extends GoogleSessionAppController {
 	private function __getDomain() {
 		Configure::load('google_session');
 		return Configure::read('GoogleSession.domain');
+	}
+
+	private function __callback($arg) {
+		$callback = '_afterGoogleSessionAdd';
+		if (is_callable(array($this, $callback))) {
+			call_user_func(array($this, $callback), $arg);
+		}
 	}
 }
