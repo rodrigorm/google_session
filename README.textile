@@ -31,6 +31,16 @@ Na pasta @plugin@ da sua aplicação digite:
 
 h2. Utilização
 
+Crie um arquivo de configuração em @app/config/google_session.php@ com o seguinte conteúdo:
+
+<pre><code><?php
+$config = array(
+	'GoogleSession' => array(
+		'domain' => '<you google apps domain only>'
+	)
+); ?>
+</code></pre>
+
 Adicione o component Auth no AppController e faça a seguinte configuração:
 
 <pre><code>$this->Auth->loginAction = array(
