@@ -96,6 +96,7 @@ class GoogleSessionController extends GoogleSessionAppController {
 			$this->Auth->userModel => array(
 				'id' => null,
 				'name' => $url['openid_ext1_value_firstname'] . ' ' . $url['openid_ext1_value_lastname'],
+				'email' => $url['openid_ext1_value_email']
 			)
 		);
 
