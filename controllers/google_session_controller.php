@@ -92,8 +92,10 @@ class GoogleSessionController extends GoogleSessionAppController {
 			return $this->redirect($this->Auth->redirect());
 		}
 
+		list($plugin, $model) = pluginSplit($this->Auth->userModel);
+
 		$user = array(
-			$this->Auth->userModel => array(
+			$model => array(
 				'id' => null,
 				'name' => $url['openid_ext1_value_firstname'] . ' ' . $url['openid_ext1_value_lastname'],
 				'email' => $url['openid_ext1_value_email']
