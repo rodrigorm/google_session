@@ -1,5 +1,6 @@
 <?php
-App::import('Core', array('HttpSocket', 'Xml'));
+App::uses('HttpSocket', 'Network/Http');
+App::uses('Xml', 'Utility');
 
 class GoogleSessionController extends GoogleSessionAppController {
 	var $uses = null;
@@ -15,7 +16,7 @@ class GoogleSessionController extends GoogleSessionAppController {
 
 		$response = $Http->get('https://www.google.com/accounts/o8/site-xrds?hd=' . $this->__getDomain());
 
-		$response = Set::reverse(new Xml($response));
+		$response = Set::reverse(Xml::build($response->body));
 		$endpoint = $response['XRDS']['XRD']['Service'][0]['URI'];
 
 		$query = array(
@@ -47,7 +48,7 @@ class GoogleSessionController extends GoogleSessionAppController {
 
 		$response = $Http->get('https://www.google.com/accounts/o8/site-xrds?hd=' . $this->__getDomain());
 
-		$response = Set::reverse(new Xml($response));
+		$response = Set::reverse(Xml::build($response->body));
 		$endpoint = $response['XRDS']['XRD']['Service'][0]['URI'];
 
 		$query = array();
@@ -92,19 +93,15 @@ class GoogleSessionController extends GoogleSessionAppController {
 			return $this->redirect($this->Auth->redirect());
 		}
 
-		list($plugin, $model) = pluginSplit($this->Auth->userModel);
-
 		$user = array(
-			$model => array(
-				'id' => null,
-				'name' => $url['openid_ext1_value_firstname'] . ' ' . $url['openid_ext1_value_lastname'],
-				'email' => $url['openid_ext1_value_email']
-			)
+			'id' => $url['openid_ext1_value_email'],
+			'name' => $url['openid_ext1_value_firstname'] . ' ' . $url['openid_ext1_value_lastname'],
+			'email' => $url['openid_ext1_value_email']
 		);
 
 		$this->__callback($user);
 
-		$this->Session->write('Auth', $user);
+		$this->Session->write(AuthComponent::$sessionKey, $user);
 
 		$this->set('redirect', $this->Auth->redirect());
 	}
