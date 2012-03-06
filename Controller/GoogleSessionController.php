@@ -44,12 +44,7 @@ class GoogleSessionController extends GoogleSessionAppController {
 	}
 
 	function admin_callback() {
-		$Http = new HttpSocket();
-
-		$response = $Http->get('https://www.google.com/accounts/o8/site-xrds?hd=' . $this->__getDomain());
-
-		$response = Set::reverse(Xml::build($response->body));
-		$endpoint = $response['XRDS']['XRD']['Service'][0]['URI'];
+		$endpoint = $this->request->query['openid_op_endpoint'];
 
 		$query = array();
 		$keys = array(
@@ -81,7 +76,7 @@ class GoogleSessionController extends GoogleSessionAppController {
 
 		$query['openid.mode'] = 'check_authentication';
 
-		$response = $Http->get($endpoint, $query);
+		$response = file_get_contents($this->request->query['openid_op_endpoint'] . '?' . http_build_query($query));
 
 		if (strpos($response, 'is_valid:true') === false) {
 			return $this->redirect($this->Auth->loginAction);
