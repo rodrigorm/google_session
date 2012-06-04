@@ -76,7 +76,9 @@ class GoogleSessionController extends GoogleSessionAppController {
 
 		$query['openid.mode'] = 'check_authentication';
 
-		$response = file_get_contents($this->request->query['openid_op_endpoint'] . '?' . http_build_query($query));
+		$Http = new HttpSocket();
+
+		$response = $Http->get($this->request->query['openid_op_endpoint'] . '?' . http_build_query($query));
 
 		if (strpos($response, 'is_valid:true') === false) {
 			return $this->redirect($this->Auth->loginAction);
